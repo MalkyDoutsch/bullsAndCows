@@ -1,3 +1,4 @@
+
 export function CodeCreation(length: number = 4): number[]{
     const code: number[]=[];
     while(code.length<length){
@@ -30,4 +31,8 @@ export function pgias(guess:number[], secretCode:number[]):number{
         }
     }
     return pgiasAmount;
+}
+
+export function checkWin(guess:number[], secretCode:number[]):boolean{
+    return bulls(guess, secretCode)===secretCode.length;
 }

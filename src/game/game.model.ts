@@ -1,4 +1,4 @@
-import { Types, Schema, Document } from 'mongoose';
+import mongoose, { Types, Schema, Document, Model } from 'mongoose';
 
 export interface IAttempt {
   guess: number[];
@@ -49,21 +49,6 @@ const gameSchema = new Schema<IGame>({
  }  
 );
 
-// {
-//     _id: ObjectId,
-//     playerId: ObjectId,
-//     secretCode: number[],         // למשל: [4, 2, 8, 1]
-//     attempts: [
-//       {
-//         guess: number[],          // למשל: [4, 3, 2, 9]
-//         bulls: number,
-//         pgias: number,
-//         createdAt: Date
-//       }
-//     ],
-//     status: 'in-progress' | 'won' | 'lost' | 'ended',
-//     maxAttempts: number,
-//     winner: boolean,              // האם הצליח לנחש
-//     createdAt: Date
-//   }
-  
+export const Game: Model<IGame> = mongoose.model<IGame>('Game', gameSchema);
+
+
