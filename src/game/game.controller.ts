@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import game_service from './game.service';
+import { Types } from 'mongoose';
 
 const router = Router();
 const service = new game_service();
@@ -12,7 +13,7 @@ router.post('/start', async (req: Request, res: Response)  => {
     try {
         const game = await service.createNewGame(playerId, password);
         if (!game) {
-            return res.status(404).send('Game not found');
+            res.status(404).send('Game not found');
         }
         res.status(201).json(game);
     } catch (error: any) {
@@ -24,10 +25,12 @@ router.post('/start', async (req: Request, res: Response)  => {
 router.post('/:gameId/guess', async (req: Request, res: Response) => {
     const { gameId } = req.params;
     const { guess } = req.body;
+    const objectId = new Types.ObjectId(gameId);
+    
     try {
-        const result = await service.guess(gameId, guess);
+        const result = await service.guessing(objectId, guess);
         if (!result) {
-            return res.status(404).send('Game not found or invalid guess');
+            res.status(404).send('Game not found or invalid guess');
         }
         res.status(200).json(result);
     } catch (error: any) {
@@ -41,7 +44,7 @@ router.get('/:gameId', async (req: Request, res: Response) => {
     try {
         const game = await service.getGameStatus(gameId);
         if (!game) {
-            return res.status(404).send('Game not found');
+            res.status(404).send('Game not found');
         }
         res.status(200).json(game);
     } catch (error: any) {
@@ -54,7 +57,7 @@ router.post('/:gameId/end', async (req: Request, res: Response) => {
     try {
         const result = await service.endGame(gameId);
         if (!result) {
-            return res.status(404).send('Game not found');
+            res.status(404).send('Game not found');
         }
         res.status(200).json({ message: 'Game ended successfully', result });
     } catch (error: any) {

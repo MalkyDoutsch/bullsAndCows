@@ -33,10 +33,13 @@ export default class game_service {
     const game = await Game.findById(gameId);
     if (!game) throw new Error('Game not found');
 
+    const _bulls = bulls(guess, game.secretCode);
+    const _pgias = pgias(guess, game.secretCode);
+
     const attempt = {
       guess,
-      bulls: bulls(guess, game.secretCode),
-      pgias: pgias(guess, game.secretCode),
+      bulls: _bulls,
+      pgias: _pgias,
       createdAt: new Date()
     };
 
@@ -49,6 +52,14 @@ export default class game_service {
       game.status = 'lost';
       game.winner = false;
     }
+    await game.save();
+    return {
+      guess,
+      bulls: _bulls,
+      pgias: _pgias,
+      status: game.status,
+      remainingAttempts: (game.maxAttempts ?? 10) - game.attempts.length
+    };
   }
 
   async getGameStatus(gameId: string) {
