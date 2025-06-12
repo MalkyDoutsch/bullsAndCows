@@ -2,24 +2,18 @@ import express from 'express';
 import { myDB } from './db/connection';
 import  routerGame from './game/game.controller';
 import routerPlayer from './players/player.controller';
-import mongoose from 'mongoose';
+
+myDB.getDB();
 
 const app = express();
 app.use(express.json());
-
-mongoose.connect('mongodb://localhost:27017/your_db_name_here')
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-  });
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error(err.stack);
     res.status(500).json({ error: 'error in server' });
   });
 
+  
   app.use('/api/games', routerGame); 
   app.use('/api/players', routerPlayer);
 

@@ -1,20 +1,24 @@
 import { Router, Request, Response } from 'express';
 import game_service from './game.service';
 import { Types } from 'mongoose';
+import { IGame } from './game.model';
+import { validateStartGame, validateGuess } from '../middleware/validateGame';
 
 const router = Router();
 const service = new game_service();
 router.get("/", (req, res) => {
-    res.send("Games route working");
+    res.send("Games router working");
   });
 
-router.post('/start', async (req: Request, res: Response)  => {
+router.post('/start', validateStartGame, async (req: Request, res: Response)  => {
     const { playerId, password } = req.body;
     try {
         const game = await service.createNewGame(playerId, password);
         if (!game) {
             res.status(404).send('Game not found');
         }
+        console.log("Game created:", game);
+        console.log((game as IGame).secretCode);
         res.status(201).json(game);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
@@ -22,7 +26,7 @@ router.post('/start', async (req: Request, res: Response)  => {
 });
 
 
-router.post('/:gameId/guess', async (req: Request, res: Response) => {
+router.post('/guess/:gameId' ,validateGuess, async (req: Request, res: Response) => {
     const { gameId } = req.params;
     const { guess } = req.body;
     const objectId = new Types.ObjectId(gameId);
@@ -39,7 +43,7 @@ router.post('/:gameId/guess', async (req: Request, res: Response) => {
 });
 
 
-router.get('/:gameId', async (req: Request, res: Response) => {
+router.get('/getGameStatus/:gameId', async (req: Request, res: Response) => {
     const { gameId } = req.params;
     try {
         const game = await service.getGameStatus(gameId);
@@ -52,7 +56,7 @@ router.get('/:gameId', async (req: Request, res: Response) => {
     }
 });
 
-router.post('/:gameId/end', async (req: Request, res: Response) => {
+router.post('/end/:gameId', async (req: Request, res: Response) => {
     const { gameId } = req.params;
     try {
         const result = await service.endGame(gameId);

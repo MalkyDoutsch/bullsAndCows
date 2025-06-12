@@ -7,8 +7,8 @@ export default class game_service {
 
   // const createCode = CodeCreation();
 
-  async createNewGame(playerId: Types.ObjectId, password: string) {
-    const existingPlayer = await Player.findOne({ where: { playerId: playerId } });
+  async createNewGame(playerId: string, password: string) {
+    const existingPlayer = await Player.findOne({  playerId: playerId });
 
     if (!existingPlayer) {
       return new Error("The id or the password is not correct.");
@@ -48,6 +48,7 @@ export default class game_service {
     if (checkWin(guess, game.secretCode)) {
       game.status = 'won';
       game.winner = true;
+      console.log(`Player ${game.playerId} won the game with guess: ${guess}`);
     } else if (game.attempts.length >= game.maxAttempts) {
       game.status = 'lost';
       game.winner = false;
