@@ -41,7 +41,7 @@ The player guesses 4 digits:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/bulls-and-cows-ts.git
+git clone https://github.com/MalkyDoutsch/bullsAndCows.git
 cd bulls-and-cows-ts
 ```
 
